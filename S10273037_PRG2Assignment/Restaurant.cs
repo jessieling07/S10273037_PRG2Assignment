@@ -10,5 +10,7 @@ namespace S10273037_PRG2Assignment
     {
         private string restaurantId;
         public string RestaurantId { get; set; }
+        private string restaurantName;
+        public string RestaurantName {  get; set; }
     }
 }
