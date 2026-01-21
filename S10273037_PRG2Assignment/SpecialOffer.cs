@@ -25,5 +25,9 @@ namespace S10273037_PRG2Assignment
             OfferDesc = description;
             Discount = discount;
         }
+        public void Tostring()
+        {
+            Console.WriteLine($"{OfferCode} - {OfferDesc} ({Discount}% off)");
+        }
     }
 }
