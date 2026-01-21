@@ -13,7 +13,12 @@ using System.Threading.Tasks;
 
 namespace S10273037_PRG2Assignment
 {
-    internal class OrderedFoodItem
+    public class OrderedFoodItem
     {
+        private int qtyOrdered;
+        private double subTotal;
+        public int Order { get; set; }
+        public double SubTotal { get; set; }
+
     }
 }
