@@ -19,5 +19,11 @@ namespace S10273037_PRG2Assignment
         public string OfferCode { get; set; }
         public string OfferDesc { get; set; }
         public double Discount { get; set; }
+        public SpecialOffer(string code, string description, double discount)
+        {
+            OfferCode = code;
+            OfferDesc = description;
+            Discount = discount;
+        }
     }
 }
