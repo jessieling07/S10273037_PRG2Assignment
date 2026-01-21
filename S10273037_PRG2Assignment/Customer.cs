@@ -12,10 +12,41 @@ using System.Threading.Tasks;
 
 namespace S10273037_PRG2Assignment
 {
-    internal class Customer
+    public class Customer
     {
-        
+        private string emailAddress;
         private string customerName;
-        public string CustomerName { get; set; }
+        private List<Order> orders;
+
+        public Customer(string emailAddress, string customerName)
+        {
+            this.emailAddress = emailAddress;
+            this.customerName = customerName;
+            this.orders = new List<Order>();
+        }
+
+        public void AddOrder(Order order)
+        {
+            orders.Add(order);
+        }
+
+        public void DisplayAllOrders()
+        {
+            Console.WriteLine($"\nOrders for {customerName}:");
+            foreach (Order order in orders)
+            {
+                Console.WriteLine($"  - {order.ToString()}");
+            }
+        }
+
+        public bool RemoveOrder(Order order)
+        {
+            return orders.Remove(order);
+        }
+
+        public string ToString()
+        {
+            return $"Customer: {customerName}, Email: {emailAddress}, Orders: {orders.Count}";
+        }
     }
 }

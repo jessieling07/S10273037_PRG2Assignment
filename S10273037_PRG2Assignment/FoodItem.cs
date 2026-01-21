@@ -12,7 +12,31 @@ using System.Threading.Tasks;
 
 namespace S10273037_PRG2Assignment
 {
-    internal class FoodItem
+    public class FoodItem
     {
+        private string itemName;
+        private string itemDesc;
+        private double itemPrice;
+        private string customise;
+
+        public FoodItem(string itemName, string itemDesc, double itemPrice, string customise = "")
+        {
+            this.itemName = itemName;
+            this.itemDesc = itemDesc;
+            this.itemPrice = itemPrice;
+            this.customise = customise;
+        }
+
+        public string ToString()
+        {
+            if (!string.IsNullOrEmpty(customise))
+            {
+                return $"{itemName} - {itemDesc} (${itemPrice:F2}) | Customise: {customise}";
+            }
+            else
+            {
+                return $"{itemName} - {itemDesc} (${itemPrice:F2})";
+            }
+        }
     }
 }
