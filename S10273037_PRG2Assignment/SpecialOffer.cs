@@ -11,7 +11,13 @@ using System.Threading.Tasks;
 
 namespace S10273037_PRG2Assignment
 {
-    internal class SpecialOffer
+    public class SpecialOffer
     {
+        private string offerCode;
+        private string offerDesc;
+        private double discount;
+        public string OfferCode { get; set; }
+        public string OfferDesc { get; set; }
+        public double Discount { get; set; }
     }
 }
