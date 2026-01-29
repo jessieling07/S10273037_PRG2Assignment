@@ -25,6 +25,9 @@ namespace S10273037_PRG2Assignment
             Item = item;
             QtyOrdered = qty;
         }
-       
+        public double GetSubtotal()
+        {
+            return Item.ItemPrice * QtyOrdered;
+        }
     }
 }
