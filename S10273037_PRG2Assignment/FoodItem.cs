@@ -19,6 +19,7 @@ namespace S10273037_PRG2Assignment
         private double itemPrice;
         private string customise;
 
+
         public FoodItem(string itemName, string itemDesc, double itemPrice, string customise = "")
         {
             this.itemName = itemName;
