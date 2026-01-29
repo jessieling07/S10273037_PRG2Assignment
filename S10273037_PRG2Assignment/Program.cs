@@ -154,7 +154,7 @@ namespace S10273037_PRG2Assignment
                     switch (choice)
                     {
                         case 1:
-                            ListAllRestaurantsAndMenuItems();
+                            Console.WriteLine("Feature not yet implemented.");
                             break;
                         case 2:
                             Console.WriteLine("Feature not yet implemented.");
@@ -186,21 +186,6 @@ namespace S10273037_PRG2Assignment
             }
         }
 
-        static void ListAllRestaurantsAndMenuItems()
-        {
-            Console.WriteLine("\nAll Restaurants and Menu Items");
-            Console.WriteLine("==============================");
-
-            foreach (Restaurant restaurant in restaurantList)
-            {
-                Console.WriteLine($"Restaurant: {restaurant.RestaurantName} ({restaurant.RestaurantId})");
-
-                foreach (FoodItem item in restaurant.Menu)
-                {
-                    Console.WriteLine($" - {item.ItemName}: {item.ItemDesc} - ${item.ItemPrice:F2}");
-                }
-                Console.WriteLine();
-            }
-        }
+        
     }
 }
