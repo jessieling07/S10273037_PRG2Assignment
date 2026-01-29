@@ -19,15 +19,12 @@ namespace S10273037_PRG2Assignment
         public FoodItem Item { get; set; }
         public int QtyOrdered { get; set; }
         public double SubTotal { get; set; }
+
         public OrderedFoodItem(FoodItem item, int qty)
         {
             Item = item;
             QtyOrdered = qty;
         }
-        public double CalculateSubtotal() 
-        {
-            return Item.itemPrice * QtyOrdered;
-        
-        }
+       
     }
 }
