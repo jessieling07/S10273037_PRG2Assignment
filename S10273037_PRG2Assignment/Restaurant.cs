@@ -22,7 +22,7 @@ namespace S10273037_PRG2Assignment
         public string RestaurantEmail { get; set; }
         public List<FoodItem> Menu { get; set; }
         public Queue<Order> OrderQueue { get; set; }
-        public List<SpecialOffer> SpecialOffers { get; set; }
+        public List<SpecialOffer> Offers { get; set; }
 
         public Restaurant(string id, string name, string email)
         {
@@ -31,8 +31,86 @@ namespace S10273037_PRG2Assignment
             RestaurantEmail = email;
             Menu = new List<FoodItem>();
             OrderQueue = new Queue<Order>();
-            SpecialOffers = new List<SpecialOffer>();
+            Offers = new List<SpecialOffer>();
         }
+        public void DisplayOrders()
+        {
+            Console.WriteLine($"Orders for {RestaurantName} ({RestaurantId})");
+            Console.WriteLine("===================================");
+
+            if (OrderQueue == null || OrderQueue.Count == 0)
+            {
+                Console.WriteLine("No orders available.");
+                return;
+            }
+
+            foreach (Order o in OrderQueue)
+            {
+                Console.WriteLine(o);
+            }
+        }
+        public void DisplaySpecialOffers()
+        {
+            Console.WriteLine($"Special Offers for {RestaurantName}");
+            Console.WriteLine("===================================");
+
+            if (Offers == null || Offers.Count == 0)
+            {
+                Console.WriteLine("No special offers available.");
+                return;
+            }
+
+            foreach (SpecialOffer s in Offers)
+            {
+                Console.WriteLine(s);
+            }
+        }
+
+        public void DisplayMenu()
+        {
+            Console.WriteLine($"Menu for {RestaurantName}");
+            Console.WriteLine("===================================");
+
+            if (Menu == null || Menu.Count == 0)
+            {
+                Console.WriteLine("No food items available.");
+                return;
+            }
+
+            foreach (FoodItem f in Menu)
+            {
+                Console.WriteLine(f);
+            }
+        }
+
+        public bool AddMenu(FoodItem item)
+        {
+            if (item == null)
+            {
+                return false;
+            }
+
+            Menu.Add(item);
+            return true;
+        }
+
+        public bool RemoveMenu()
+        {
+            if (Menu == null || Menu.Count == 0)
+            {
+                return false;
+            }
+
+            Menu.Clear();
+            return true;
+        }
+
        
+        public override string ToString()
+        {
+            return $"{RestaurantName} ({RestaurantId}) - {RestaurantEmail}";
+        }
+
+
     }
 }

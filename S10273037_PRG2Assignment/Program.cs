@@ -23,12 +23,6 @@ namespace S10273037_PRG2Assignment
             LoadRestaurants();
             LoadFoodItems();
 
-            
-
-            // FEATURE 2: Load files (customers and orders) - ADD HERE
-
-
-
             MainMenu();
         }
 
@@ -116,9 +110,6 @@ namespace S10273037_PRG2Assignment
             }
         }
 
-        // FEATURE 2: Load customers from CSV file - IMPLEMENT THIS METHOD
-        // FEATURE 2: Load orders from CSV file - IMPLEMENT THIS METHOD
-
         static Restaurant FindRestaurantById(string restaurantId)
         {
             foreach (Restaurant restaurant in restaurantList)
@@ -157,19 +148,19 @@ namespace S10273037_PRG2Assignment
                             Console.WriteLine("Feature not yet implemented.");
                             break;
                         case 2:
-                            Console.WriteLine("Feature not yet implemented.");
+                            ListAllOrders();
                             break;
                         case 3:
-                            Console.WriteLine("Feature not yet implemented.");
+                            CreateOrder();
                             break;
                         case 4:
-                            Console.WriteLine("Feature not yet implemented.");
+                            ProcessOrder();
                             break;
                         case 5:
-                            Console.WriteLine("Feature not yet implemented.");
+                            ModifyOrder();
                             break;
                         case 6:
-                            Console.WriteLine("Feature not yet implemented.");
+                            DeleteOrder();
                             break;
                         case 0:
                             Console.WriteLine("Exiting...");
@@ -186,6 +177,42 @@ namespace S10273037_PRG2Assignment
             }
         }
 
-        
+        static void ListAllRestaurantsAndMenuItems()
+        {
+            Console.WriteLine("\nAll Restaurants and Menu Items");
+            Console.WriteLine("==============================");
+
+            foreach (Restaurant restaurant in restaurantList)
+            {
+                Console.WriteLine($"Restaurant: {restaurant.RestaurantName} ({restaurant.RestaurantId})");
+
+                foreach (FoodItem item in restaurant.Menu)
+                {
+                    Console.WriteLine($" - {item.ItemName}: {item.ItemDesc} - ${item.ItemPrice:F2}");
+                }
+                Console.WriteLine();
+            }
+        }
+
+        static void ListAllOrders()
+        {
+            // FEATURE 2
+        }
+        static void CreateOrder()
+        {
+            // FEATURE 3
+        }
+        static void ProcessOrder()
+        {
+            // FEATURE 4
+        }
+        static void ModifyOrder()
+        {
+            // FEATURE 5
+        }
+        static void DeleteOrder()
+        {
+            // FEATURE 6
+        }
     }
 }
