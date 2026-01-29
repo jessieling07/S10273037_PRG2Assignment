@@ -19,6 +19,30 @@ namespace S10273037_PRG2Assignment
         private double itemPrice;
         private string customise;
 
+        public string ItemName
+        {
+            get { return itemName; }
+            set { itemName = value; }
+        }
+
+        public string ItemDesc
+        {
+            get { return itemDesc; }
+            set { itemDesc = value; }
+        }
+
+        public double ItemPrice
+        {
+            get { return itemPrice; }
+            set { itemPrice = value; }
+        }
+
+        public string Customise
+        {
+            get { return customise; }
+            set { customise = value; }
+        }
+
         public FoodItem(string itemName, string itemDesc, double itemPrice, string customise = "")
         {
             this.itemName = itemName;
