@@ -179,6 +179,13 @@ namespace S10273037_PRG2Assignment
 
         static void ListAllOrders()
         {
+            Console.WriteLine("\n===== All Orders =====");
+
+            foreach (Restaurant r in restaurantList)
+            {
+                Console.WriteLine($"\nRestaurant: {r.RestaurantName}");
+                r.DisplayOrders();
+            }
             // FEATURE 2
         }
         static void CreateOrder()
