@@ -15,6 +15,8 @@ namespace S10273037_PRG2Assignment
         static List<Restaurant> restaurantList = new List<Restaurant>();
         static List<Customer> customerList = new List<Customer>();
 
+        
+
         static void Main(string[] args)
         {
             Console.WriteLine("Welcome to the Gruberoo Food Delivery System");
@@ -22,6 +24,9 @@ namespace S10273037_PRG2Assignment
             
             LoadRestaurants();
             LoadFoodItems();
+
+            LoadCustomers();
+            LoadOrders();
 
             MainMenu();
         }
@@ -177,6 +182,126 @@ namespace S10273037_PRG2Assignment
             }
         }
 
+        // FEATURE 2
+         
+
+        static void LoadCustomers()
+        {
+            try
+            {
+                string[] lines = File.ReadAllLines("customers.csv");
+                int count = 0;
+
+                
+                for (int i = 1; i < lines.Length; i++)
+                {
+                    string[] data = lines[i].Split(',');
+
+                    if (data.Length >= 2)
+                    {
+                        string name = data[0].Trim();
+                        string email = data[1].Trim();
+
+                        Customer customer = new Customer(email, name);
+                        customerList.Add(customer);
+                        count++;
+                    }
+                }
+
+                Console.WriteLine($"{count} customers loaded!");
+            }
+            catch (FileNotFoundException)
+            {
+                Console.WriteLine("Error: customers.csv file not found!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading customers: {ex.Message}");
+            }
+
+        }
+
+        static void LoadOrders()
+        {
+            try
+            {
+                string[] lines = File.ReadAllLines("orders.csv");
+                int count = 0;
+
+                
+                for (int i = 1; i < lines.Length; i++)
+                {
+                    string[] data = lines[i].Split(',');
+
+                    
+                    if (data.Length >= 9)
+                    {
+                        int orderId = int.Parse(data[0].Trim());
+                        string customerEmail = data[1].Trim();
+                        string restaurantId = data[2].Trim();
+                        string deliveryDate = data[3].Trim();
+                        string deliveryTime = data[4].Trim();
+                        string deliveryAddress = data[5].Trim();
+                        string paymentMethod = data[6].Trim();
+                        double orderTotal = double.Parse(data[7].Trim());
+                        string status = data[8].Trim();
+
+                        
+                        DateTime deliveryDateTime = DateTime.Parse($"{deliveryDate} {deliveryTime}");
+                        DateTime orderDateTime = DateTime.Now;
+
+                        
+                        Order order = new Order(orderId, orderDateTime, orderTotal, status,
+                                              deliveryDateTime, deliveryAddress, paymentMethod, true);
+
+                        
+                        Restaurant restaurant = FindRestaurantById(restaurantId);
+                        if (restaurant != null)
+                        {
+                            restaurant.OrderQueue.Enqueue(order);
+                        }
+
+                      
+                        Customer customer = FindCustomerByEmail(customerEmail);
+                        if (customer != null)
+                        {
+                            customer.AddOrder(order);
+                        }
+
+                        count++;
+                    }
+                }
+
+                Console.WriteLine($"{count} orders loaded!");
+            }
+            catch (FileNotFoundException)
+            {
+                Console.WriteLine("Error: orders.csv file not found!");
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Error: Invalid format in orders.csv");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading orders: {ex.Message}");
+            }
+
+        }
+        static Customer FindCustomerByEmail(string email)
+        {
+            foreach (Customer customer in customerList)
+            {
+                if (customer.EmailAddress == email)
+                {
+                    return customer;
+                }
+            }
+            return null;
+        }
+
+        // FEATURE 4
+        
         static void ListAllOrders()
         {
             Console.WriteLine("\n===== All Orders =====");
@@ -186,23 +311,54 @@ namespace S10273037_PRG2Assignment
                 Console.WriteLine($"\nRestaurant: {r.RestaurantName}");
                 r.DisplayOrders();
             }
-            // FEATURE 2
         }
-        static void CreateOrder()
+        static void ListAllRestaurantsAndMenuItems()
         {
             // FEATURE 3
+            Console.WriteLine("\nAll Restaurants and Menu Items");
+            Console.WriteLine("==============================");
+
+            if (restaurantList.Count == 0)
+            {
+                Console.WriteLine("No restaurants found.");
+                return;
+            }
+
+            foreach (Restaurant restaurant in restaurantList)
+            {
+                Console.WriteLine($"Restaurant: {restaurant.RestaurantName} ({restaurant.RestaurantId})");
+
+                if (restaurant.Menu.Count == 0)
+                {
+                    Console.WriteLine(" - No menu items available");
+                }
+                else
+                {
+                    foreach (FoodItem item in restaurant.Menu)
+                    {
+                        Console.WriteLine($" - {item.ItemName}: {item.ItemDesc} - ${item.ItemPrice:F2}");
+                    }
+                }
+                Console.WriteLine(); 
+            }
         }
-        static void ProcessOrder()
-        {
-            // FEATURE 4
-        }
-        static void ModifyOrder()
+
+        
+        static void CreateOrder()
         {
             // FEATURE 5
         }
-        static void DeleteOrder()
+        static void ProcessOrder()
         {
             // FEATURE 6
+        }
+        static void ModifyOrder()
+        {
+            // FEATURE 7
+        }
+        static void DeleteOrder()
+        {
+            // FEATURE 8
         }
     }
 }

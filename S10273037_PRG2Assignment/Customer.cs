@@ -24,6 +24,11 @@ namespace S10273037_PRG2Assignment
             this.customerName = customerName;
             this.orders = new List<Order>();
         }
+        public string EmailAddress
+        {
+            get { return emailAddress; }
+        }
+
 
         public void AddOrder(Order order)
         {
