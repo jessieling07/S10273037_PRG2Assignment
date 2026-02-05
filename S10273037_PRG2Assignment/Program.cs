@@ -351,6 +351,53 @@ namespace S10273037_PRG2Assignment
         static void ProcessOrder()
         {
             // FEATURE 6
+            Console.WriteLine("\nProcess Order");
+            Console.WriteLine("=============");
+            Console.WriteLine("Enter Restaurant ID: ");
+            string restaurantId = Console.ReadLine().Trim();
+
+            Restaurant restaurant = FindRestaurantById(restaurantId);
+
+            if (restaurant == null)
+            {
+                Console.WriteLine(" Error: Restaurant not found!");
+                return;
+            }
+
+            if (restaurant.OrderQueue.Count == 0)
+            {
+                Console.WriteLine("No orders to process fo rthis restaurant.");
+                return;
+            }
+
+            Queue<Order> tempQueue = new Queue<Order>();
+
+            while (restaurant.OrderQueue.Count > 0)
+            {
+                Order order = restaurant.OrderQueue.Dequeue();
+                Console.WriteLine($"\nOrder {order.OrderId}:");
+                Customer customer = FindCustomerByEmail(order.CustomerEmail);
+                if (customer != null)
+                {
+                    Console.WriteLine($"Customer: {customer.CustomerName}");
+                }
+                else
+                {
+                    Console.WriteLine($"Customer: Unknown");
+                }
+
+                Console.WriteLine("Ordered Items:");
+
+                int itemNum = 1;
+                foreach (var item in order.OrderedFoodItems)
+                    {
+                    Console.WriteLine($"{itemNum}. {item}");
+                    itemNum++;
+                }
+
+            }
+
+
         }
         static void ModifyOrder()
         {

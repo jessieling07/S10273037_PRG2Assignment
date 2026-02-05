@@ -24,6 +24,61 @@ namespace S10273037_PRG2Assignment
         private bool orderPaid;
         private List<object> orderedFoodItems;
 
+        public int OrderId
+        {
+            get { return orderId; }
+            set { orderId = value; }
+        }
+
+        public DateTime OrderDateTime
+
+        {
+            get { return orderDateTime; }
+            set { orderDateTime = value; }
+        }
+        public double OrderTotal
+        {
+            get { return orderTotal; }
+            set { orderTotal = value; }
+        }
+
+        public DateTime DeliveryDateTime
+
+        {
+            get { return deliveryDateTime; }
+            set { deliveryDateTime = value; }
+
+        }
+        public string DeliveryAddress
+        {
+            get { return deliveryAddress; }
+            set { deliveryAddress = value; }
+        }
+
+        public string OrderPaymentMethod;
+        { 
+            get { return orderPaymentMethod; }
+            set { orderPaymentMethod = value; }
+        }
+
+        public bool OrderPaid
+        {
+            get { return orderPaid; }
+            set { orderPaid = value; }
+        }
+
+        public List<object> OrderedFoodItems
+        { 
+            get { return orderedFoodItems; }
+            set { orderedFoodItems = value; }
+        }
+
+        public string CustomerEmail { get; set; }
+
+
+
+
+
         public Order(int orderId, DateTime orderDateTime, double orderTotal, string orderStatus,
                      DateTime deliveryDateTime, string deliveryAddress, string orderPaymentMethod, bool orderPaid)
         {
