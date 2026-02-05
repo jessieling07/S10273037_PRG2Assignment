@@ -42,6 +42,12 @@ namespace S10273037_PRG2Assignment
             set { orderTotal = value; }
         }
 
+        public string OrderStatus
+        {
+            get { return orderStatus; }
+            set { orderStatus = value; }
+
+        }
         public DateTime DeliveryDateTime
 
         {
@@ -55,7 +61,7 @@ namespace S10273037_PRG2Assignment
             set { deliveryAddress = value; }
         }
 
-        public string OrderPaymentMethod;
+        public string OrderPaymentMethod
         { 
             get { return orderPaymentMethod; }
             set { orderPaymentMethod = value; }

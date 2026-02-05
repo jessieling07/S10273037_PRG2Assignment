@@ -29,6 +29,11 @@ namespace S10273037_PRG2Assignment
             get { return emailAddress; }
         }
 
+        public string CustomerName
+        {
+            get { return customerName; }
+        }
+
 
         public void AddOrder(Order order)
         {

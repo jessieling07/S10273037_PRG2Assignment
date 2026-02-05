@@ -395,9 +395,78 @@ namespace S10273037_PRG2Assignment
                     itemNum++;
                 }
 
+                Console.WriteLine($"Delivery date/time: {order.DeliveryDateTime:dd/MM/yyyy HH:mm}");
+                Console.WriteLine($"Total Amount: ${order.OrderTotal:F2}");
+                Console.WriteLine($"Order status: {order.OrderStatus}");
+
+                Console.Write("[C]onfirm / [R]eject / [S]kip / [D]eliver: ");
+                string action = Console.ReadLine().ToUpper().Trim();
+
+                switch (action)
+                {
+                    case "C":
+
+                        if (order.OrderStatus == "Pending")
+                        {
+                            order.OrderStatus = "Preparing";
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Error: Can only confirm orders with 'Pending' status.");
+                        }
+                        break;
+                    
+                    case "R":
+
+                        if (order.OrderStatus == "Pending")
+                        {
+                            order.OrderStatus = "Rejected";
+                            Console.WriteLine($"Order {order.OrderId} has been rejected. Refound of ${order.OrderTotal:F2} processed.");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Error: Can only reject orders with 'Pending' status.");
+                        }
+                        break;
+
+                    case "S":
+                        if (order.OrderStatus == "Cancelled")
+                        {
+                            Console.WriteLine($"Order {order.OrderId} skipped. ");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Error: Can onyl skip orders with 'Cancelled' status. ");
+                        }
+                        break;
+
+                    case "D":
+
+                        if (order.OrderStatus == "Preparing")
+                        {
+                            order.OrderStatus = "Delivered";
+                            Console.WriteLine($"Order {order.OrderId} delivered. Status: Delivered");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Error: Can only deliver orders with 'Preparing' status.");
+                        }
+                        break;
+
+                    default:
+                        Console.WriteLine("Invalid action. Order skipped.");
+                        break;
+
+                }
+
+                tempQueue.Enqueue(order);
+
             }
 
-
+            while (tempQueue.Count > 0)
+            {
+                restaurant.OrderQueue.Enqueue(tempQueue.Dequeue());
+            }
         }
         static void ModifyOrder()
         {
