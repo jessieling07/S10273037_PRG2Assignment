@@ -34,6 +34,11 @@ namespace S10273037_PRG2Assignment
             get { return customerName; }
         }
 
+        public List<Order> Orders
+        {
+            get { return orders; }
+            set { orders = value; }
+        }
 
         public void AddOrder(Order order)
         {

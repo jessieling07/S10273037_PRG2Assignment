@@ -572,6 +572,93 @@ namespace S10273037_PRG2Assignment
         static void DeleteOrder()
         {
             // FEATURE 8
+            Console.WriteLine("\nDelete Order");
+            Console.WriteLine("=============");
+            Console.WriteLine("Enter Customer Email: ");
+            string email = Console.ReadLine().Trim();
+
+            Customer customer = FindCustomerByEmail(email);
+
+            if (customer == null)
+            {
+                Console.WriteLine("error: Customer not found!");
+                return;
+            }
+
+            List<Order> pendingOrders = new List<Order>();
+            Console.WriteLine("Pending Orders:");
+            foreach (Order order in customer.Orders)
+            {
+                if (order.OrderStatus == "Pending")
+                {
+                    pendingOrders.Add(order);
+                    Console.WriteLine(order.OrderId);
+                }
+            }
+
+            if (pendingOrders.Count == 0)
+            {
+                Console.WriteLine("No pending orders to delete.");
+                return;
+            }
+
+            Console.Write("enter Order ID: ");
+            int orderId;
+
+            if (!int.TryParse(Console.ReadLine(), out orderId))
+            {
+                Console.WriteLine("error: Invalid Order ID format!");
+                return;
+            }
+
+            Order orderToDelete = null;
+            foreach (Order order in pendingOrders)
+            {
+                if (order.OrderId == orderId)
+                {
+                   orderToDelete = order;
+                    break;
+                }
+            }
+
+            if (orderToDelete == null)
+            {
+                Console.WriteLine("error: Order not found or not in pending status!");
+                return;
+            }
+
+            Console.WriteLine($"Customer: {customer.CustomerName}");
+            Console.WriteLine("Ordered Items:");
+
+            int itemNum = 1;
+            foreach (var item in orderToDelete.OrderedFoodItems)
+            {
+              Console.WriteLine($"{itemNum}. {item.ToString()}");
+                itemNum++;
+            }
+
+            Console.WriteLine($"Delivery date/time: {orderToDelete.DeliveryDateTime:dd/MM/yyyy HH:mm}");
+            Console.WriteLine($"Total Amount: ${orderToDelete.OrderTotal:F2}");
+            Console.WriteLine($"Order Status: {orderToDelete.OrderStatus}");
+
+            Console.Write("Confirm deletion? [Y/N]");
+            string confirm = Console.ReadLine().ToUpper().Trim();
+
+            if (confirm == "Y")
+            {
+                // Update order status to Cancelled
+                orderToDelete.OrderStatus = "Cancelled";
+
+                // Add to refund stack (if you have implemented it)
+                // refundStack.Push(orderToDelete);
+
+                Console.WriteLine($"Order {orderToDelete.OrderId} cancelled. Refund of ${orderToDelete.OrderTotal:F2} processed.");
+            }
+            else
+            {
+                Console.WriteLine("Deletion cancelled.");
+            }
+
         }
     }
 }
