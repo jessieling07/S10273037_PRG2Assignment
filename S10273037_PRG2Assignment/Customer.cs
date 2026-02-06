@@ -63,5 +63,20 @@ namespace S10273037_PRG2Assignment
         {
             return $"Customer: {customerName}, Email: {emailAddress}, Orders: {orders.Count}";
         }
+        public List<Order> GetPendingOrders()
+        {
+            List<Order> pendingOrders = new List<Order>();
+
+            foreach (Order o in orders)
+            {
+                if (o.OrderStatus == "Pending")
+                {
+                    pendingOrders.Add(o);
+                }
+            }
+
+            return pendingOrders;
+        }
+
     }
 }
