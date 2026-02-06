@@ -21,17 +21,11 @@ namespace S10273037_PRG2Assignment
         {
             Console.WriteLine("Welcome to the Gruberoo Food Delivery System");
 
-            
+
             LoadRestaurants();
             LoadFoodItems();
-
             LoadCustomers();
             LoadOrders();
-            ListAllOrders();
-            ListAllRestaurantsAndMenuItems();
-            CreateOrder();
-            ProcessOrder();
-            DeleteOrder();
 
             MainMenu();
         }
@@ -305,18 +299,7 @@ namespace S10273037_PRG2Assignment
             return null;
         }
 
-        // FEATURE 4
         
-        static void ListAllOrders()
-        {
-            Console.WriteLine("\n===== All Orders =====");
-
-            foreach (Restaurant r in restaurantList)
-            {
-                Console.WriteLine($"\nRestaurant: {r.RestaurantName}");
-                r.DisplayOrders();
-            }
-        }
         static void ListAllRestaurantsAndMenuItems()
         {
             // FEATURE 3
@@ -348,7 +331,20 @@ namespace S10273037_PRG2Assignment
             }
         }
 
-        
+        // FEATURE 4
+
+        static void ListAllOrders()
+        {
+            Console.WriteLine("\n===== All Orders =====");
+
+            foreach (Restaurant r in restaurantList)
+            {
+                Console.WriteLine($"\nRestaurant: {r.RestaurantName}");
+                r.DisplayOrders();
+            }
+        }
+
+
         static void CreateOrder()
         {
             // FEATURE 5

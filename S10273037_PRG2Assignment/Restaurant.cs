@@ -33,20 +33,18 @@ namespace S10273037_PRG2Assignment
             OrderQueue = new Queue<Order>();
             Offers = new List<SpecialOffer>();
         }
+        // In Restaurant class
         public void DisplayOrders()
         {
-            Console.WriteLine($"Orders for {RestaurantName} ({RestaurantId})");
-            Console.WriteLine("===================================");
-
-            if (OrderQueue == null || OrderQueue.Count == 0)
+            if (OrderQueue.Count == 0)
             {
                 Console.WriteLine("No orders available.");
                 return;
             }
 
-            foreach (Order o in OrderQueue)
+            foreach (Order order in OrderQueue)
             {
-                Console.WriteLine(o);
+                Console.WriteLine(order.ToString());
             }
         }
         public void DisplaySpecialOffers()
