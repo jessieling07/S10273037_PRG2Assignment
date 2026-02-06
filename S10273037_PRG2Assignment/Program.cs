@@ -345,8 +345,7 @@ namespace S10273037_PRG2Assignment
         }
 
 
-        static void CreateOrder()
-        {
+     
             // FEATURE 5
             static void CreateOrder()
             {
@@ -445,7 +444,7 @@ namespace S10273037_PRG2Assignment
             }
 
 
-        }
+        
         static void ProcessOrder()
         {
             // FEATURE 6
@@ -566,8 +565,7 @@ namespace S10273037_PRG2Assignment
                 restaurant.OrderQueue.Enqueue(tempQueue.Dequeue());
             }
         }
-        static void ModifyOrder()
-        {
+        
             // FEATURE 7
             static void ModifyOrder()
             {
@@ -621,7 +619,7 @@ namespace S10273037_PRG2Assignment
             }
 
 
-        }
+        
         static void DeleteOrder()
         {
             // FEATURE 8
