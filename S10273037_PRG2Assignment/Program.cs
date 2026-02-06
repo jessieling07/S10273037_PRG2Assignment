@@ -347,6 +347,103 @@ namespace S10273037_PRG2Assignment
         static void CreateOrder()
         {
             // FEATURE 5
+            static void CreateOrder()
+            {
+                Console.WriteLine("\nCreate New Order");
+                Console.WriteLine("================");
+
+                Console.Write("Enter Customer Email: ");
+                string email = Console.ReadLine().Trim();
+                Customer customer = FindCustomerByEmail(email);
+                if (customer == null)
+                {
+                    Console.WriteLine("Customer not found.");
+                    return;
+                }
+
+                Console.Write("Enter Restaurant ID: ");
+                string restId = Console.ReadLine().Trim();
+                Restaurant restaurant = FindRestaurantById(restId);
+                if (restaurant == null)
+                {
+                    Console.WriteLine("Restaurant not found.");
+                    return;
+                }
+
+                Console.Write("Enter Delivery Date (dd/mm/yyyy): ");
+                string date = Console.ReadLine();
+                Console.Write("Enter Delivery Time (hh:mm): ");
+                string time = Console.ReadLine();
+                DateTime deliveryDT = DateTime.Parse($"{date} {time}");
+
+                Console.Write("Enter Delivery Address: ");
+                string address = Console.ReadLine();
+
+                List<OrderedFoodItem> orderedItems = new List<OrderedFoodItem>();
+                Console.WriteLine("\nAvailable Food Items:");
+                for (int i = 0; i < restaurant.Menu.Count; i++)
+                {
+                    FoodItem fi = restaurant.Menu[i];
+                    Console.WriteLine($"{i + 1}. {fi.ItemName} - ${fi.ItemPrice:F2}");
+                }
+
+                while (true)
+                {
+                    Console.Write("Enter item number (0 to finish): ");
+                    int choice = int.Parse(Console.ReadLine());
+                    if (choice == 0) break;
+
+                    Console.Write("Enter quantity: ");
+                    int qty = int.Parse(Console.ReadLine());
+
+                    FoodItem selected = restaurant.Menu[choice - 1];
+                    orderedItems.Add(new OrderedFoodItem(selected, qty));
+                }
+
+                double total = 0;
+                foreach (OrderedFoodItem ofi in orderedItems)
+                    total += ofi.GetSubtotal();
+
+                double deliveryFee = 5.0;
+                total += deliveryFee;
+
+                Console.WriteLine($"Order Total: ${total:F2}");
+                Console.Write("Proceed to payment? [Y/N]: ");
+                if (Console.ReadLine().ToUpper() != "Y") return;
+
+                Console.Write("Payment method [CC/PP/CD]: ");
+                string payment = Console.ReadLine().ToUpper();
+
+                int newOrderId = 1000;
+                foreach (Restaurant r in restaurantList)
+                    foreach (Order o in r.OrderQueue)
+                        if (o.OrderId > newOrderId) newOrderId = o.OrderId;
+                newOrderId++;
+
+                Order newOrder = new Order(
+                    newOrderId,
+                    DateTime.Now,
+                    total,
+                    "Pending",
+                    deliveryDT,
+                    address,
+                    payment,
+                    true
+                );
+
+                foreach (OrderedFoodItem ofi in orderedItems)
+                    newOrder.AddItem(ofi);
+
+                restaurant.OrderQueue.Enqueue(newOrder);
+                customer.AddOrder(newOrder);
+
+                File.AppendAllText("orders.csv",
+                    $"\n{newOrderId},{email},{restId},{date},{time},{address},{DateTime.Now},{total},Pending");
+
+                Console.WriteLine($"Order {newOrderId} created successfully! Status: Pending");
+            }
+
+
         }
         static void ProcessOrder()
         {
