@@ -27,6 +27,11 @@ namespace S10273037_PRG2Assignment
 
             LoadCustomers();
             LoadOrders();
+            ListAllOrders();
+            ListAllRestaurantsAndMenuItems();
+            CreateOrder();
+            ProcessOrder();
+            DeleteOrder();
 
             MainMenu();
         }
@@ -568,6 +573,58 @@ namespace S10273037_PRG2Assignment
         static void ModifyOrder()
         {
             // FEATURE 7
+            static void ModifyOrder()
+            {
+                Console.Write("\nEnter Customer Email: ");
+                string email = Console.ReadLine();
+                Customer c = FindCustomerByEmail(email);
+                if (c == null)
+                {
+                    Console.WriteLine("Customer not found.");
+                    return;
+                }
+
+                List<Order> pending = c.GetPendingOrders();
+                if (pending.Count == 0)
+                {
+                    Console.WriteLine("No pending orders.");
+                    return;
+                }
+
+                Console.WriteLine("Pending Orders:");
+                foreach (Order o in pending)
+                    Console.WriteLine(o.OrderId);
+
+                Console.Write("Enter Order ID: ");
+                int id = int.Parse(Console.ReadLine());
+                Order order = pending.Find(o => o.OrderId == id);
+                if (order == null) return;
+
+                Console.WriteLine("[1] Address [2] Delivery Time");
+                int choice = int.Parse(Console.ReadLine());
+
+                if (choice == 1)
+                {
+                    Console.Write("Enter new address: ");
+                    order.DeliveryAddress = Console.ReadLine();
+                }
+                else if (choice == 2)
+                {
+                    Console.Write("Enter new time (hh:mm): ");
+                    string t = Console.ReadLine();
+                    order.DeliveryDateTime =
+                        new DateTime(order.DeliveryDateTime.Year,
+                                     order.DeliveryDateTime.Month,
+                                     order.DeliveryDateTime.Day,
+                                     int.Parse(t.Split(':')[0]),
+                                     int.Parse(t.Split(':')[1]),
+                                     0);
+                }
+
+                Console.WriteLine("Order updated successfully.");
+            }
+
+
         }
         static void DeleteOrder()
         {
