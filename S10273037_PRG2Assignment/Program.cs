@@ -432,7 +432,7 @@ namespace S10273037_PRG2Assignment
                 );
 
                 foreach (OrderedFoodItem ofi in orderedItems)
-                    newOrder.AddItem(ofi);
+                    newOrder.AddOrderedFoodItem(ofi);
 
                 restaurant.OrderQueue.Enqueue(newOrder);
                 customer.AddOrder(newOrder);
