@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Numerics;
 
 namespace S10273037_PRG2Assignment
 {
@@ -167,8 +168,8 @@ namespace S10273037_PRG2Assignment
                         case 6:
                             DeleteOrder();
                             break;
-                        case 7:
-                            BulkProcessOrders();
+                        case 8:
+                            DisplayOrderAmount();
                             break;
                         case 0:
                             Console.WriteLine("Exiting...");
@@ -187,7 +188,7 @@ namespace S10273037_PRG2Assignment
 
         // FEATURE 2
          
-
+       
         static void LoadCustomers()
         {
             try
@@ -253,7 +254,8 @@ namespace S10273037_PRG2Assignment
                         DateTime deliveryDateTime = DateTime.Parse($"{deliveryDate} {deliveryTime}");
                         DateTime orderDateTime = DateTime.Now;
 
-                        
+                        // advanced b
+                        double deliveryFee = 5.0;
                         Order order = new Order(orderId, orderDateTime, orderTotal, status,
                                               deliveryDateTime, deliveryAddress, paymentMethod, true);
 
@@ -716,6 +718,22 @@ namespace S10273037_PRG2Assignment
 
         }
 
+        // advanced feature b
+        void DisplayOrderAmount()
+        {
+            foreach(Restaurant r in restaurantList)
+            {
+               
+               foreach(Order o in r.OrderQueue)
+                {
+                    if(o.OrderStatus == "Delivered")
+                    { 
+                        double totalOrder = o.CalculateOrderTotal();
+                        Console.WriteLine(totalOrder);
+                    }
+                }
+              
+            }
         static void BulkProcessOrders()
         {
             // Advanced Feature 4(a)
@@ -804,4 +822,5 @@ namespace S10273037_PRG2Assignment
             Console.WriteLine($"Percentage of orders automatically processed: {percentage:F2}%");
         }
     }
+
 }

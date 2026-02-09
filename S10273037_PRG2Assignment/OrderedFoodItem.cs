@@ -13,21 +13,24 @@ using System.Threading.Tasks;
 
 namespace S10273037_PRG2Assignment
 {
-    public class OrderedFoodItem
+    public class OrderedFoodItem: FoodItem
         // OrderedFoodItem is the Association Class (between Oder and FoodItem)
     {
-        public FoodItem Item { get; set; }
         public int QtyOrdered { get; set; }
         public double SubTotal { get; set; }
 
-        public OrderedFoodItem(FoodItem item, int qty)
+     
+
+        public OrderedFoodItem(FoodItem foodItem,int QtyOrdered, double SubTotal) : base( foodItem.ItemName, foodItem.ItemDesc, foodItem.ItemPrice, foodItem.Customise)
         {
-            Item = item;
-            QtyOrdered = qty;
+            this.QtyOrdered = QtyOrdered;
+            this.SubTotal = SubTotal;
         }
+         
         public double GetSubtotal()
         {
-            return Item.ItemPrice * QtyOrdered;
+            return ItemPrice * QtyOrdered;
         }
     }
+   
 }
