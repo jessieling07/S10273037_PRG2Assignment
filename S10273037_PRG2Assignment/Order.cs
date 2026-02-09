@@ -23,11 +23,7 @@ namespace S10273037_PRG2Assignment
         private string orderPaymentMethod;
         private bool orderPaid;
         private List<object> orderedFoodItems;
-        // add property for advanced feature b
-        private string restaurantId;
-        private double deliveryFee;
-        public string RestaurantId { get;set;}
-        public double OrderFee { get;set;}
+      
         public int OrderId
         {
             get { return orderId; }
@@ -91,7 +87,7 @@ namespace S10273037_PRG2Assignment
 
         public Order(int orderId, DateTime orderDateTime, double orderTotal, string orderStatus,
                      DateTime deliveryDateTime, string deliveryAddress, string orderPaymentMethod, 
-                     bool orderPaid, string restaurantId, double orderFee)
+                     bool orderPaid)
         {
             this.orderId = orderId;
             this.orderDateTime = orderDateTime;
@@ -102,17 +98,15 @@ namespace S10273037_PRG2Assignment
             this.orderPaymentMethod = orderPaymentMethod;
             this.orderPaid = orderPaid;
             this.orderedFoodItems = new List<object>();
-            // 新加的
-            this.restaurantId = restaurantId;
-            this.OrderFee = orderFee;
         }
 
         public double CalculateOrderTotal()
         {
             double total = 0;
-            foreach (object item in orderedFoodItems)
+            // need to use qty and price
+            foreach (OrderedFoodItem item in orderedFoodItems)
             {
-                total += 0;
+                total += item.GetSubtotal();
             }
             return total;
         }
