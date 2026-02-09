@@ -139,6 +139,7 @@ namespace S10273037_PRG2Assignment
                 Console.WriteLine("4. Process an order");
                 Console.WriteLine("5. Modify an existing order");
                 Console.WriteLine("6. Delete an existing order");
+                Console.WriteLine("7. Bulk process unprocessed orders");
                 Console.WriteLine("0. Exit");
                 Console.Write("Enter your choice: ");
 
@@ -165,6 +166,9 @@ namespace S10273037_PRG2Assignment
                             break;
                         case 6:
                             DeleteOrder();
+                            break;
+                        case 7:
+                            BulkProcessOrders();
                             break;
                         case 0:
                             Console.WriteLine("Exiting...");
@@ -345,8 +349,8 @@ namespace S10273037_PRG2Assignment
         }
 
 
-        static void CreateOrder()
-        {
+       
+        
             // FEATURE 5
             static void CreateOrder()
             {
@@ -445,7 +449,7 @@ namespace S10273037_PRG2Assignment
             }
 
 
-        }
+        
         static void ProcessOrder()
         {
             // FEATURE 6
@@ -566,8 +570,8 @@ namespace S10273037_PRG2Assignment
                 restaurant.OrderQueue.Enqueue(tempQueue.Dequeue());
             }
         }
-        static void ModifyOrder()
-        {
+        
+        
             // FEATURE 7
             static void ModifyOrder()
             {
@@ -621,7 +625,7 @@ namespace S10273037_PRG2Assignment
             }
 
 
-        }
+        
         static void DeleteOrder()
         {
             // FEATURE 8
@@ -712,6 +716,94 @@ namespace S10273037_PRG2Assignment
                 Console.WriteLine("Deletion cancelled.");
             }
 
+        }
+
+        static void BulkProcessOrders()
+        {
+            // Advanced Feature 4(a)
+            Console.WriteLine("\nBulk Process Orders");
+            Console.WriteLine("===================");
+
+            int totalPending = 0;
+            int processedCount = 0;
+            int preparingCount = 0;
+            int rejectedCount = 0;
+
+            foreach (Restaurant restaurant in restaurantList)
+            {
+                foreach (Order order in restaurant.OrderQueue)
+                {
+                    if (order.OrderStatus == "Pending")
+                    {
+                        totalPending++;
+                    }
+                }
+            }
+            Console.WriteLine($"Total pending orders found: {totalPending}");
+            if (totalPending == 0)
+            {
+                Console.WriteLine("No pending orders to process.");
+                return;
+            }
+
+            foreach (Restaurant restaurant in restaurantList)
+            {
+                Queue<Order> tempQueue = new Queue<Order>();
+                while (restaurant.OrderQueue.Count > 0)
+                {
+                    Order order = restaurant.OrderQueue.Dequeue(); //prevent order loss so temporarily stores order
+                    if (order.OrderStatus == "Pending")
+                    {
+                        TimeSpan timeDifference = order.DeliveryDateTime - DateTime.Now; //calculate how much time til it is delivered
+                        double hoursUntilDelivery = timeDifference.TotalHours; //convert to hours
+                        if (hoursUntilDelivery < 1)
+                        {
+                            order.OrderStatus = "Rejected";
+                            rejectedCount++;
+                            Console.WriteLine($"Order {order.OrderId} rejected ( Delivery time < 1 hour)");
+
+                        }
+                        else
+                        {
+                            order.OrderStatus = "Preparing";
+                            preparingCount++;
+                            Console.WriteLine($"Order {order.OrderId} set to Preparing");
+                        }
+
+                        processedCount++;
+                    }
+                    tempQueue.Enqueue(order); //add back to queue after processing
+                }
+
+                // Restore all orders back to the queue
+                while (tempQueue.Count > 0)
+                {
+                    restaurant.OrderQueue.Enqueue(tempQueue.Dequeue());
+                }
+
+            }
+
+                
+                
+
+
+            
+
+            
+            Console.WriteLine("\n===== Summary Statistics =====");
+            Console.WriteLine($"Orders processed: {processedCount}");
+            Console.WriteLine($"Orders set to Preparing: {preparingCount}");
+            Console.WriteLine($"Orders rejected: {rejectedCount}");
+
+            int totalOrders = 0;
+            foreach (Restaurant restaurant in restaurantList)
+            {
+                totalOrders += restaurant.OrderQueue.Count;
+            }
+
+            // Calculate percentage of processed orders
+            double percentage = totalOrders > 0 ? (processedCount * 100.0 / totalOrders) : 0;
+            Console.WriteLine($"Percentage of orders automatically processed: {percentage:F2}%");
         }
     }
 }
