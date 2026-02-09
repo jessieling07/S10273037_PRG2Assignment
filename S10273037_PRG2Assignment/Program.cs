@@ -349,8 +349,6 @@ namespace S10273037_PRG2Assignment
         }
 
 
-       
-        
             // FEATURE 5
             static void CreateOrder()
             {
@@ -571,7 +569,7 @@ namespace S10273037_PRG2Assignment
             }
         }
         
-        
+
             // FEATURE 7
             static void ModifyOrder()
             {
