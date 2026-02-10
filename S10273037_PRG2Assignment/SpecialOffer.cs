@@ -16,18 +16,22 @@ namespace S10273037_PRG2Assignment
         private string offerCode;
         private string offerDesc;
         private double discount;
+        
         public string OfferCode { get; set; }
+       
         public string OfferDesc { get; set; }
+
         public double Discount { get; set; }
+
         public SpecialOffer(string code, string description, double discount)
         {
             OfferCode = code;
             OfferDesc = description;
             Discount = discount;
         }
-        public void Tostring()
+        public override string ToString()
         {
-            Console.WriteLine($"{OfferCode} - {OfferDesc} ({Discount}% off)");
+            return $"{OfferCode} - {OfferDesc} ({Discount}% off)";
         }
     }
 }
