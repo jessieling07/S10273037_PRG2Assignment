@@ -16,6 +16,8 @@ namespace S10273037_PRG2Assignment
         static List<Restaurant> restaurantList = new List<Restaurant>();
         static List<Customer> customerList = new List<Customer>();
 
+
+
         static void Main(string[] args)
         {
             Console.WriteLine("Welcome to the Gruberoo Food Delivery System");
@@ -37,7 +39,7 @@ namespace S10273037_PRG2Assignment
                 string[] lines = File.ReadAllLines("restaurants.csv");
                 int count = 0;
 
-                
+
                 for (int i = 1; i < lines.Length; i++)
                 {
                     string[] data = lines[i].Split(',');
@@ -73,7 +75,7 @@ namespace S10273037_PRG2Assignment
                 string[] lines = File.ReadAllLines("fooditems.csv");
                 int count = 0;
 
-                
+
                 for (int i = 1; i < lines.Length; i++)
                 {
                     string[] data = lines[i].Split(',');
@@ -85,10 +87,10 @@ namespace S10273037_PRG2Assignment
                         string itemDesc = data[2].Trim();
                         double itemPrice = double.Parse(data[3].Trim());
 
-                        
+
                         FoodItem foodItem = new FoodItem(itemName, itemDesc, itemPrice);
 
-                        
+
                         Restaurant restaurant = FindRestaurantById(restaurantId);
                         if (restaurant != null)
                         {
@@ -186,8 +188,8 @@ namespace S10273037_PRG2Assignment
         }
 
         // FEATURE 2
-         
-       
+
+
         static void LoadCustomers()
         {
             try
@@ -195,7 +197,7 @@ namespace S10273037_PRG2Assignment
                 string[] lines = File.ReadAllLines("customers.csv");
                 int count = 0;
 
-                
+
                 for (int i = 1; i < lines.Length; i++)
                 {
                     string[] data = lines[i].Split(',');
@@ -231,12 +233,12 @@ namespace S10273037_PRG2Assignment
                 string[] lines = File.ReadAllLines("orders.csv");
                 int count = 0;
 
-                
+
                 for (int i = 1; i < lines.Length; i++)
                 {
                     string[] data = lines[i].Split(',');
 
-                    
+
                     if (data.Length >= 9)
                     {
                         int orderId = int.Parse(data[0].Trim());
@@ -249,7 +251,7 @@ namespace S10273037_PRG2Assignment
                         double orderTotal = double.Parse(data[7].Trim());
                         string status = data[8].Trim();
 
-                        
+
                         DateTime deliveryDateTime = DateTime.Parse($"{deliveryDate} {deliveryTime}");
                         DateTime orderDateTime = DateTime.Now;
 
@@ -258,14 +260,14 @@ namespace S10273037_PRG2Assignment
                         Order order = new Order(orderId, orderDateTime, orderTotal, status,
                                               deliveryDateTime, deliveryAddress, paymentMethod, true);
 
-                        
+
                         Restaurant restaurant = FindRestaurantById(restaurantId);
                         if (restaurant != null)
                         {
                             restaurant.OrderQueue.Enqueue(order);
                         }
 
-                      
+
                         Customer customer = FindCustomerByEmail(customerEmail);
                         if (customer != null)
                         {
@@ -304,7 +306,7 @@ namespace S10273037_PRG2Assignment
             return null;
         }
 
-        
+
         static void ListAllRestaurantsAndMenuItems()
         {
             // FEATURE 3
@@ -332,7 +334,7 @@ namespace S10273037_PRG2Assignment
                         Console.WriteLine($" - {item.ItemName}: {item.ItemDesc} - ${item.ItemPrice:F2}");
                     }
                 }
-                Console.WriteLine(); 
+                Console.WriteLine();
             }
         }
 
@@ -348,7 +350,6 @@ namespace S10273037_PRG2Assignment
                 r.DisplayOrders();
             }
         }
-
 
 
         // FEATURE 5
@@ -601,7 +602,7 @@ namespace S10273037_PRG2Assignment
 
                 int itemNum = 1;
                 foreach (var item in order.OrderedFoodItems)
-                    {
+                {
                     Console.WriteLine($"{itemNum}. {item}");
                     itemNum++;
                 }
@@ -626,7 +627,7 @@ namespace S10273037_PRG2Assignment
                             Console.WriteLine($"Error: Can only confirm orders with 'Pending' status.");
                         }
                         break;
-                    
+
                     case "R":
 
                         if (order.OrderStatus == "Pending")
@@ -679,61 +680,62 @@ namespace S10273037_PRG2Assignment
                 restaurant.OrderQueue.Enqueue(tempQueue.Dequeue());
             }
         }
-        
-            // FEATURE 7
-            static void ModifyOrder()
+
+
+        // FEATURE 7
+        static void ModifyOrder()
+        {
+            Console.Write("\nEnter Customer Email: ");
+            string email = Console.ReadLine();
+            Customer c = FindCustomerByEmail(email);
+            if (c == null)
             {
-                Console.Write("\nEnter Customer Email: ");
-                string email = Console.ReadLine();
-                Customer c = FindCustomerByEmail(email);
-                if (c == null)
-                {
-                    Console.WriteLine("Customer not found.");
-                    return;
-                }
-
-                List<Order> pending = c.GetPendingOrders();
-                if (pending.Count == 0)
-                {
-                    Console.WriteLine("No pending orders.");
-                    return;
-                }
-
-                Console.WriteLine("Pending Orders:");
-                foreach (Order o in pending)
-                    Console.WriteLine(o.OrderId);
-
-                Console.Write("Enter Order ID: ");
-                int id = int.Parse(Console.ReadLine());
-                Order order = pending.Find(o => o.OrderId == id);
-                if (order == null) return;
-
-                Console.WriteLine("[1] Address [2] Delivery Time");
-                int choice = int.Parse(Console.ReadLine());
-
-                if (choice == 1)
-                {
-                    Console.Write("Enter new address: ");
-                    order.DeliveryAddress = Console.ReadLine();
-                }
-                else if (choice == 2)
-                {
-                    Console.Write("Enter new time (hh:mm): ");
-                    string t = Console.ReadLine();
-                    order.DeliveryDateTime =
-                        new DateTime(order.DeliveryDateTime.Year,
-                                     order.DeliveryDateTime.Month,
-                                     order.DeliveryDateTime.Day,
-                                     int.Parse(t.Split(':')[0]),
-                                     int.Parse(t.Split(':')[1]),
-                                     0);
-                }
-
-                Console.WriteLine("Order updated successfully.");
+                Console.WriteLine("Customer not found.");
+                return;
             }
 
+            List<Order> pending = c.GetPendingOrders();
+            if (pending.Count == 0)
+            {
+                Console.WriteLine("No pending orders.");
+                return;
+            }
 
-        
+            Console.WriteLine("Pending Orders:");
+            foreach (Order o in pending)
+                Console.WriteLine(o.OrderId);
+
+            Console.Write("Enter Order ID: ");
+            int id = int.Parse(Console.ReadLine());
+            Order order = pending.Find(o => o.OrderId == id);
+            if (order == null) return;
+
+            Console.WriteLine("[1] Address [2] Delivery Time");
+            int choice = int.Parse(Console.ReadLine());
+
+            if (choice == 1)
+            {
+                Console.Write("Enter new address: ");
+                order.DeliveryAddress = Console.ReadLine();
+            }
+            else if (choice == 2)
+            {
+                Console.Write("Enter new time (hh:mm): ");
+                string t = Console.ReadLine();
+                order.DeliveryDateTime =
+                    new DateTime(order.DeliveryDateTime.Year,
+                                 order.DeliveryDateTime.Month,
+                                 order.DeliveryDateTime.Day,
+                                 int.Parse(t.Split(':')[0]),
+                                 int.Parse(t.Split(':')[1]),
+                                 0);
+            }
+
+            Console.WriteLine("Order updated successfully.");
+        }
+
+
+
         static void DeleteOrder()
         {
             // FEATURE 8
@@ -781,7 +783,7 @@ namespace S10273037_PRG2Assignment
             {
                 if (order.OrderId == orderId)
                 {
-                   orderToDelete = order;
+                    orderToDelete = order;
                     break;
                 }
             }
@@ -798,7 +800,7 @@ namespace S10273037_PRG2Assignment
             int itemNum = 1;
             foreach (var item in orderToDelete.OrderedFoodItems)
             {
-              Console.WriteLine($"{itemNum}. {item.ToString()}");
+                Console.WriteLine($"{itemNum}. {item.ToString()}");
                 itemNum++;
             }
 
@@ -826,6 +828,7 @@ namespace S10273037_PRG2Assignment
 
         }
 
+      
 
         // advanced feature b
         static void DisplayOrderAmount()
@@ -934,5 +937,8 @@ namespace S10273037_PRG2Assignment
 
 
     }
-
 }
+
+    
+
+    
