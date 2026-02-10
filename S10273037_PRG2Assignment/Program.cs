@@ -28,6 +28,8 @@ namespace S10273037_PRG2Assignment
             MainMenu();
         }
 
+        
+
         static void LoadRestaurants()
         {
             try
@@ -101,6 +103,80 @@ namespace S10273037_PRG2Assignment
                 Console.WriteLine($"Error loading food items: {ex.Message}");
             }
         }
+
+        static Restaurant FindRestaurantById(string restaurantId)
+        {
+            foreach (Restaurant restaurant in restaurantList)
+            {
+                if (restaurant.RestaurantId == restaurantId)
+                {
+                    return restaurant;
+                }
+            }
+            return null;
+        }
+
+        static void MainMenu()
+        {
+            int choice = -1;
+
+            while (choice != 0)
+            {
+                Console.WriteLine("\n===== Gruberoo Food Delivery System =====");
+                Console.WriteLine("1. List all restaurants and menu items");
+                Console.WriteLine("2. List all orders");
+                Console.WriteLine("3. Create a new order");
+                Console.WriteLine("4. Process an order");
+                Console.WriteLine("5. Modify an existing order");
+                Console.WriteLine("6. Delete an existing order");
+                Console.WriteLine("8. Display order amount");
+                Console.WriteLine("0. Exit");
+                Console.Write("Enter your choice: ");
+
+                try
+                {
+                    choice = int.Parse(Console.ReadLine());
+
+                    switch (choice)
+                    {
+                        case 1:
+                            ListAllRestaurantsAndMenuItems();
+                            break;
+                        case 2:
+                            ListAllOrders();
+                            break;
+                        case 3:
+                            CreateOrder();
+                            break;
+                        case 4:
+                            ProcessOrder();
+                            break;
+                        case 5:
+                            ModifyOrder();
+                            break;
+                        case 6:
+                            DeleteOrder();
+                            break;
+                        case 8:
+                            DisplayOrderAmount();
+                            break;
+                        case 0:
+                            Console.WriteLine("Exiting...");
+                            break;
+                        default:
+                            Console.WriteLine("Invalid choice. Please try again.");
+                            break;
+                    }
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Invalid input. Please enter a number.");
+                }
+            }
+        }
+
+        // FEATURE 2
+
 
         static void LoadCustomers()
         {
@@ -391,6 +467,7 @@ namespace S10273037_PRG2Assignment
             Console.WriteLine("\nCreate New Order");
             Console.WriteLine("================");
 
+            // 1. 获取客户信息
             Console.Write("Enter Customer Email: ");
             string email = Console.ReadLine().Trim();
             Customer customer = FindCustomerByEmail(email);
@@ -400,6 +477,7 @@ namespace S10273037_PRG2Assignment
                 return;
             }
 
+            // 2. 获取餐厅信息
             Console.Write("Enter Restaurant ID: ");
             string restId = Console.ReadLine().Trim();
             Restaurant restaurant = FindRestaurantById(restId);
@@ -409,6 +487,7 @@ namespace S10273037_PRG2Assignment
                 return;
             }
 
+            // 3. 获取配送信息
             Console.Write("Enter Delivery Date (dd/mm/yyyy): ");
             string date = Console.ReadLine();
             Console.Write("Enter Delivery Time (hh:mm): ");
@@ -423,6 +502,7 @@ namespace S10273037_PRG2Assignment
             Console.Write("Enter Delivery Address: ");
             string address = Console.ReadLine();
 
+            // 4. 显示菜单并选择食物
             List<OrderedFoodItem> orderedItems = new List<OrderedFoodItem>();
             Console.WriteLine("\nAvailable Food Items:");
             for (int i = 0; i < restaurant.Menu.Count; i++)
@@ -430,6 +510,9 @@ namespace S10273037_PRG2Assignment
                 FoodItem fi = restaurant.Menu[i];
                 Console.WriteLine($"{i + 1}. {fi.ItemName} - ${fi.ItemPrice:F2}");
             }
+
+            // 用于存储特殊请求
+            string specialRequest = "";
 
             while (true)
             {
@@ -442,6 +525,12 @@ namespace S10273037_PRG2Assignment
                 }
                 if (itemChoice == 0) break;
                 if (itemChoice < 1 || itemChoice > restaurant.Menu.Count)
+                {
+                    Console.WriteLine("Invalid item number. Please try again.");
+                    continue;
+                }
+
+                if (choice < 1 || choice > restaurant.Menu.Count)
                 {
                     Console.WriteLine("Invalid item number. Please try again.");
                     continue;
@@ -492,27 +581,34 @@ namespace S10273037_PRG2Assignment
                 return;
             }
 
+            // 8. 生成订单ID
             int newOrderId = 1000;
             foreach (Restaurant r in restaurantList)
+            {
                 foreach (Order o in r.OrderQueue)
-                    if (o.OrderId > newOrderId) newOrderId = o.OrderId;
-            newOrderId++;
+                {
+                    if (o.OrderId >= newOrderId)
+                        newOrderId = o.OrderId + 1;
+                }
+            }
 
             Order newOrder = new Order(newOrderId, DateTime.Now, total, "Pending",
                                        deliveryDT, address, payment, true);
             newOrder.CustomerEmail = email;
 
+            // 添加已订购的食物项目
             foreach (OrderedFoodItem ofi in orderedItems)
                 newOrder.AddOrderedFoodItem(ofi);
 
+            // 10. 添加到餐厅队列和客户订单列表
             restaurant.OrderQueue.Enqueue(newOrder);
             customer.AddOrder(newOrder);
 
             File.AppendAllText("orders.csv",
                 $"\n{newOrderId},{email},{restId},{date},{time},{address},{payment},{total},Pending,");
 
-            Console.WriteLine($"Order {newOrderId} created successfully! Status: Pending");
-        }
+                string csvLine = $"\n{newOrderId},{email},{restId},{deliveryDateStr},{deliveryTimeStr},{address},{orderDateTimeStr},{total},Pending";
+                File.AppendAllText("orders.csv", csvLine);
 
         static void ProcessOrder()
         {
@@ -915,6 +1011,8 @@ namespace S10273037_PRG2Assignment
 
                 foreach (Order o in r.OrderQueue)
                 {
+                    Console.WriteLine($"  Order #{o.OrderId}: Status={o.OrderStatus}, Total=${o.OrderTotal:F2}");
+
                     if (o.OrderStatus == "Delivered")
                     {
                         restaurantTotal += o.OrderTotal - deliveryFee;
