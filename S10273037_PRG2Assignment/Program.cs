@@ -22,7 +22,6 @@ namespace S10273037_PRG2Assignment
         {
             Console.WriteLine("Welcome to the Gruberoo Food Delivery System");
 
-
             LoadRestaurants();
             LoadFoodItems();
             LoadCustomers();
@@ -30,6 +29,8 @@ namespace S10273037_PRG2Assignment
 
             MainMenu();
         }
+
+        
 
         static void LoadRestaurants()
         {
@@ -140,7 +141,7 @@ namespace S10273037_PRG2Assignment
                 Console.WriteLine("4. Process an order");
                 Console.WriteLine("5. Modify an existing order");
                 Console.WriteLine("6. Delete an existing order");
-                Console.WriteLine("7. Bulk process unprocessed orders");
+                Console.WriteLine("8. Display order amount");
                 Console.WriteLine("0. Exit");
                 Console.Write("Enter your choice: ");
 
@@ -357,6 +358,7 @@ namespace S10273037_PRG2Assignment
             Console.WriteLine("\nCreate New Order");
             Console.WriteLine("================");
 
+            // 1. 获取客户信息
             Console.Write("Enter Customer Email: ");
             string email = Console.ReadLine().Trim();
             Customer customer = FindCustomerByEmail(email);
@@ -366,6 +368,7 @@ namespace S10273037_PRG2Assignment
                 return;
             }
 
+            // 2. 获取餐厅信息
             Console.Write("Enter Restaurant ID: ");
             string restId = Console.ReadLine().Trim();
             Restaurant restaurant = FindRestaurantById(restId);
@@ -375,6 +378,7 @@ namespace S10273037_PRG2Assignment
                 return;
             }
 
+            // 3. 获取配送信息
             Console.Write("Enter Delivery Date (dd/mm/yyyy): ");
             string date = Console.ReadLine();
             Console.Write("Enter Delivery Time (hh:mm): ");
@@ -384,6 +388,7 @@ namespace S10273037_PRG2Assignment
             Console.Write("Enter Delivery Address: ");
             string address = Console.ReadLine();
 
+            // 4. 显示菜单并选择食物
             List<OrderedFoodItem> orderedItems = new List<OrderedFoodItem>();
             Console.WriteLine("\nAvailable Food Items:");
             for (int i = 0; i < restaurant.Menu.Count; i++)
@@ -392,39 +397,129 @@ namespace S10273037_PRG2Assignment
                 Console.WriteLine($"{i + 1}. {fi.ItemName} - ${fi.ItemPrice:F2}");
             }
 
+            // 用于存储特殊请求
+            string specialRequest = "";
+
             while (true)
             {
-                Console.Write("Enter item number (0 to finish): ");
-                int choice = int.Parse(Console.ReadLine());
+                Console.Write("\nEnter item number (0 to finish): ");
+                int choice;
+                if (!int.TryParse(Console.ReadLine(), out choice))
+                {
+                    Console.WriteLine("Invalid input. Please enter a number.");
+                    continue;
+                }
+
                 if (choice == 0) break;
 
+                if (choice < 1 || choice > restaurant.Menu.Count)
+                {
+                    Console.WriteLine("Invalid item number. Please try again.");
+                    continue;
+                }
+
                 Console.Write("Enter quantity: ");
-                int qty = int.Parse(Console.ReadLine());
+                int qty;
+                if (!int.TryParse(Console.ReadLine(), out qty) || qty <= 0)
+                {
+                    Console.WriteLine("Invalid quantity. Please enter a positive number.");
+                    continue;
+                }
 
                 FoodItem selected = restaurant.Menu[choice - 1];
-                orderedItems.Add(new OrderedFoodItem(selected, qty));
+
+                // 检查是否需要添加特殊请求（只在第一次选择时询问）
+                if (string.IsNullOrEmpty(specialRequest))
+                {
+                    Console.Write("Add special request for this item? [Y/N]: ");
+                    string addRequest = Console.ReadLine().ToUpper();
+
+                    if (addRequest == "Y")
+                    {
+                        Console.Write("Enter special request (e.g., extra toppings, no onions): ");
+                        string request = Console.ReadLine().Trim();
+
+                        // 创建一个新的FoodItem副本并添加特殊请求
+                        selected = new FoodItem(
+                            selected.ItemName,
+                            selected.ItemDesc,
+                            selected.ItemPrice,
+                            request  // 设置自定义请求
+                        );
+                        specialRequest = request;
+                    }
+                }
+
+                // 创建OrderedFoodItem - 这里使用你实际的方法名
+                OrderedFoodItem orderedItem = new OrderedFoodItem(selected, qty, selected.ItemPrice);
+                orderedItems.Add(orderedItem);
+
+                Console.WriteLine($"Added {qty} x {selected.ItemName} to order.");
             }
 
-            double total = 0;
+            if (orderedItems.Count == 0)
+            {
+                Console.WriteLine("No items selected. Order cancelled.");
+                return;
+            }
+
+            // 5. 计算订单总额
+            double foodTotal = 0;
             foreach (OrderedFoodItem ofi in orderedItems)
-                total += ofi.GetSubtotal();
+                foodTotal += ofi.GetSubtotal();  // 使用 GetSubtotal() 而不是 CalculateSubtotal()
 
             double deliveryFee = 5.0;
-            total += deliveryFee;
+            double total = foodTotal + deliveryFee;
 
+            Console.WriteLine($"\nOrder Summary:");
+            Console.WriteLine($"Food Total: ${foodTotal:F2}");
+            Console.WriteLine($"Delivery Fee: ${deliveryFee:F2}");
             Console.WriteLine($"Order Total: ${total:F2}");
-            Console.Write("Proceed to payment? [Y/N]: ");
-            if (Console.ReadLine().ToUpper() != "Y") return;
 
-            Console.Write("Payment method [CC/PP/CD]: ");
-            string payment = Console.ReadLine().ToUpper();
+            if (!string.IsNullOrEmpty(specialRequest))
+            {
+                Console.WriteLine($"Special Request: {specialRequest}");
+            }
 
+            // 6. 支付确认
+            Console.Write("\nProceed to payment? [Y/N]: ");
+            string proceed = Console.ReadLine().ToUpper();
+            if (proceed != "Y")
+            {
+                Console.WriteLine("Order cancelled.");
+                return;
+            }
+
+            // 7. 选择支付方式
+            string payment = "";
+            while (true)
+            {
+                Console.WriteLine("\nPayment method:");
+                Console.WriteLine("[CC] Credit Card");
+                Console.WriteLine("[PP] PayPal");
+                Console.WriteLine("[CD] Cash on Delivery");
+                Console.Write("Choose payment method: ");
+
+                payment = Console.ReadLine().ToUpper();
+
+                if (payment == "CC" || payment == "PP" || payment == "CD")
+                    break;
+                else
+                    Console.WriteLine("Invalid payment method. Please enter CC, PP, or CD.");
+            }
+
+            // 8. 生成订单ID
             int newOrderId = 1000;
             foreach (Restaurant r in restaurantList)
+            {
                 foreach (Order o in r.OrderQueue)
-                    if (o.OrderId > newOrderId) newOrderId = o.OrderId;
-            newOrderId++;
+                {
+                    if (o.OrderId >= newOrderId)
+                        newOrderId = o.OrderId + 1;
+                }
+            }
 
+            // 9. 创建订单
             Order newOrder = new Order(
                 newOrderId,
                 DateTime.Now,
@@ -433,21 +528,36 @@ namespace S10273037_PRG2Assignment
                 deliveryDT,
                 address,
                 payment,
-                true
+                true  // 假设已经支付
             );
 
+            // 添加已订购的食物项目
             foreach (OrderedFoodItem ofi in orderedItems)
                 newOrder.AddOrderedFoodItem(ofi);
 
+            // 10. 添加到餐厅队列和客户订单列表
             restaurant.OrderQueue.Enqueue(newOrder);
             customer.AddOrder(newOrder);
 
-            File.AppendAllText("orders.csv",
-                $"\n{newOrderId},{email},{restId},{date},{time},{address},{DateTime.Now},{total},Pending");
+            // 11. 保存到CSV文件
+            try
+            {
+                // 格式化日期时间用于CSV
+                string orderDateTimeStr = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
+                string deliveryDateStr = deliveryDT.ToString("dd/MM/yyyy");
+                string deliveryTimeStr = deliveryDT.ToString("HH:mm");
 
-            Console.WriteLine($"Order {newOrderId} created successfully! Status: Pending");
+                string csvLine = $"\n{newOrderId},{email},{restId},{deliveryDateStr},{deliveryTimeStr},{address},{orderDateTimeStr},{total},Pending";
+                File.AppendAllText("orders.csv", csvLine);
+
+                Console.WriteLine($"\nOrder {newOrderId} created successfully! Status: Pending");
+                Console.WriteLine($"Order has been added to {restaurant.RestaurantName}'s queue.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error saving order to file: {ex.Message}");
+            }
         }
-
 
 
         static void ProcessOrder()
@@ -721,24 +831,111 @@ namespace S10273037_PRG2Assignment
       
 
         // advanced feature b
-        void DisplayOrderAmount()
+        static void DisplayOrderAmount()
         {
+            double totalSuccessfulAmount = 0;
+            double totalRefundedAmount = 0;
+            int totalDeliveredOrders = 0;
+            int totalRefundedOrders = 0;
+
+            Console.WriteLine("\n===========================================");
+            Console.WriteLine("        GRUBEROO FINANCIAL SUMMARY");
+            Console.WriteLine("===========================================");
+
+            // 先检查所有订单的状态和金额
+            Console.WriteLine("\n=== DEBUG: All Orders Summary ===");
+            int allOrdersCount = 0;
             foreach (Restaurant r in restaurantList)
             {
+                Console.WriteLine($"\nRestaurant: {r.RestaurantName} - {r.OrderQueue.Count} orders");
+                foreach (Order o in r.OrderQueue)
+                {
+                    allOrdersCount++;
+                    Console.WriteLine($"  Order #{o.OrderId}: Status={o.OrderStatus}, Total=${o.OrderTotal:F2}, Customer={o.CustomerEmail}");
+                }
+            }
+            Console.WriteLine($"Total orders in system: {allOrdersCount}");
+
+            Console.WriteLine("\n=== FINANCIAL CALCULATION ===");
+            foreach (Restaurant r in restaurantList)
+            {
+                Console.WriteLine($"\n--- {r.RestaurantName} ({r.RestaurantId}) ---");
+
+                double restaurantSuccessful = 0;
+                double restaurantRefunded = 0;
+                int delivered = 0;
+                int refunded = 0;
 
                 foreach (Order o in r.OrderQueue)
                 {
+                    Console.WriteLine($"  Order #{o.OrderId}: Status={o.OrderStatus}, Total=${o.OrderTotal:F2}");
+
                     if (o.OrderStatus == "Delivered")
                     {
-                        double totalOrder = o.CalculateOrderTotal();
-                        Console.WriteLine(totalOrder);
+                        restaurantSuccessful += o.OrderTotal;
+                        delivered++;
+                        Console.WriteLine($"    -> Counted as DELIVERED: +${o.OrderTotal:F2}");
+                    }
+                    else if (o.OrderStatus == "Rejected" || o.OrderStatus == "Cancelled")
+                    {
+                        restaurantRefunded += o.OrderTotal;
+                        refunded++;
+                        Console.WriteLine($"    -> Counted as REFUNDED: -${o.OrderTotal:F2}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"    -> Status '{o.OrderStatus}' NOT counted");
                     }
                 }
 
+                Console.WriteLine($"  Summary: Delivered={delivered} (${restaurantSuccessful:F2}), Refunded={refunded} (${restaurantRefunded:F2})");
+                Console.WriteLine($"  Restaurant Net: ${(restaurantSuccessful - restaurantRefunded):F2}");
+
+                totalSuccessfulAmount += restaurantSuccessful;
+                totalRefundedAmount += restaurantRefunded;
+                totalDeliveredOrders += delivered;
+                totalRefundedOrders += refunded;
             }
+
+            Console.WriteLine("\n===========================================");
+            Console.WriteLine("           OVERALL FINANCIAL SUMMARY");
+            Console.WriteLine("===========================================");
+            Console.WriteLine($"Delivered Orders: {totalDeliveredOrders}");
+            Console.WriteLine($"Total Successful Amount: ${totalSuccessfulAmount:F2}");
+            Console.WriteLine($"Refunded Orders: {totalRefundedOrders}");
+            Console.WriteLine($"Total Refunded Amount: ${totalRefundedAmount:F2}");
+            Console.WriteLine($"─────────────────────────────────────────────");
+
+            double finalAmount = totalSuccessfulAmount - totalRefundedAmount;
+            Console.WriteLine($"FINAL AMOUNT GRUBEROO EARNS: ${finalAmount:F2}");
+
+            // 分析为什么是负数
+            if (finalAmount < 0)
+            {
+                Console.WriteLine("\n=== WARNING: Negative Earnings! Analysis ===");
+                Console.WriteLine($"Reason: Refunds (${totalRefundedAmount:F2}) > Success (${totalSuccessfulAmount:F2})");
+                Console.WriteLine($"Difference: ${Math.Abs(finalAmount):F2}");
+
+                if (totalDeliveredOrders == 0 && totalRefundedOrders > 0)
+                {
+                    Console.WriteLine("No delivered orders, only refunds!");
+                }
+            }
+
+            Console.WriteLine("===========================================");
         }
-            
-        
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }
 
