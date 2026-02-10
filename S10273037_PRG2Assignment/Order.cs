@@ -22,7 +22,7 @@ namespace S10273037_PRG2Assignment
         private string deliveryAddress;
         private string orderPaymentMethod;
         private bool orderPaid;
-        private List<object> orderedFoodItems;
+        private List<OrderedFoodItem> orderedFoodItems;
       
         public int OrderId
         {
@@ -73,7 +73,7 @@ namespace S10273037_PRG2Assignment
             set { orderPaid = value; }
         }
 
-        public List<object> OrderedFoodItems
+        public List<OrderedFoodItem> OrderedFoodItems
         { 
             get { return orderedFoodItems; }
             set { orderedFoodItems = value; }
@@ -97,7 +97,7 @@ namespace S10273037_PRG2Assignment
             this.deliveryAddress = deliveryAddress;
             this.orderPaymentMethod = orderPaymentMethod;
             this.orderPaid = orderPaid;
-            this.orderedFoodItems = new List<object>();
+            this.orderedFoodItems = new List<OrderedFoodItem>();
         }
 
         public double CalculateOrderTotal()
@@ -111,12 +111,12 @@ namespace S10273037_PRG2Assignment
             return total;
         }
 
-        public void AddOrderedFoodItem(object orderedFoodItem)
+        public void AddOrderedFoodItem(OrderedFoodItem orderedFoodItem)
         {
             orderedFoodItems.Add(orderedFoodItem);
         }
 
-        public bool RemoveOrderedFoodItem(object orderedFoodItem)
+        public bool RemoveOrderedFoodItem(OrderedFoodItem orderedFoodItem)
         {
             return orderedFoodItems.Remove(orderedFoodItem);
         }
@@ -130,7 +130,7 @@ namespace S10273037_PRG2Assignment
             }
         }
 
-        public string ToString()
+        public override string ToString()
         {
             return $"Order ID: {orderId}, Status: {orderStatus}, Total: ${orderTotal:F2}, Paid: {orderPaid}";
         }
